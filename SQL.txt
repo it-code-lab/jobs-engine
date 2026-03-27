@@ -1,0 +1,675 @@
+-- =========================================================
+-- Career and Livelihood Guidance Platform - India V1
+-- MySQL 8+ Schema
+-- Stack: PHP + MySQL
+-- =========================================================
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ---------------------------------------------------------
+-- Optional: drop tables in reverse dependency order
+-- Uncomment only if you want a clean rebuild
+-- ---------------------------------------------------------
+-- DROP TABLE IF EXISTS audit_logs;
+-- DROP TABLE IF EXISTS featured_sections;
+-- DROP TABLE IF EXISTS site_faqs;
+-- DROP TABLE IF EXISTS user_feedback;
+-- DROP TABLE IF EXISTS user_recent_views;
+-- DROP TABLE IF EXISTS user_saved_opportunities;
+-- DROP TABLE IF EXISTS related_opportunities;
+-- DROP TABLE IF EXISTS opportunity_faqs;
+-- DROP TABLE IF EXISTS opportunity_learning_resources;
+-- DROP TABLE IF EXISTS opportunity_risks;
+-- DROP TABLE IF EXISTS opportunity_steps;
+-- DROP TABLE IF EXISTS opportunity_tag_map;
+-- DROP TABLE IF EXISTS opportunity_tags;
+-- DROP TABLE IF EXISTS opportunity_location_rules;
+-- DROP TABLE IF EXISTS district_context_tags;
+-- DROP TABLE IF EXISTS districts;
+-- DROP TABLE IF EXISTS states;
+-- DROP TABLE IF EXISTS scoring_weights;
+-- DROP TABLE IF EXISTS opportunity_profile_rules;
+-- DROP TABLE IF EXISTS opportunities;
+-- DROP TABLE IF EXISTS opportunity_categories;
+-- DROP TABLE IF EXISTS user_profile_resources;
+-- DROP TABLE IF EXISTS user_profiles;
+-- DROP TABLE IF EXISTS users;
+-- DROP TABLE IF EXISTS admin_users;
+
+-- ---------------------------------------------------------
+-- USERS
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_users (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    full_name VARCHAR(150) NOT NULL,
+    email VARCHAR(190) NULL,
+    phone VARCHAR(25) NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    status ENUM('active', 'inactive', 'blocked') NOT NULL DEFAULT 'active',
+    email_verified_at DATETIME NULL,
+    last_login_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_users_email (email),
+    UNIQUE KEY uq_users_phone (phone),
+    KEY idx_users_status (status)
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_user_profiles (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    age_group ENUM('18_24', '25_34', '35_44', '45_54', '55_plus') NULL,
+    gender ENUM('male', 'female', 'other', 'prefer_not_to_say') NULL,
+    state_id INT UNSIGNED NULL,
+    district_id INT UNSIGNED NULL,
+    current_work_status ENUM(
+        'unemployed',
+        'student',
+        'homemaker',
+        'part_time_worker',
+        'full_time_worker',
+        'self_employed',
+        'business_owner'
+    ) NULL,
+    education_level ENUM(
+        'none',
+        'primary',
+        'middle',
+        'secondary',
+        'higher_secondary',
+        'vocational',
+        'diploma',
+        'graduate',
+        'postgraduate'
+    ) NULL,
+    prior_experience_level ENUM('none', 'beginner', 'some', 'experienced') NULL,
+    digital_literacy_level ENUM('none', 'basic', 'moderate', 'strong') NULL,
+    available_investment_range ENUM(
+        'none',
+        'under_5000',
+        '5000_20000',
+        '20000_50000',
+        '50000_100000',
+        'above_100000'
+    ) NULL,
+    monthly_income_target_range ENUM(
+        'under_5000',
+        '5000_10000',
+        '10000_20000',
+        '20000_50000',
+        '50000_100000',
+        'above_100000'
+    ) NULL,
+    work_preference ENUM(
+        'jobs_only',
+        'home_based_only',
+        'self_employment_only',
+        'business_only',
+        'open_to_all'
+    ) NULL,
+    home_based_preference ENUM('required', 'preferred', 'not_important') NULL,
+    full_time_part_time_preference ENUM('full_time', 'part_time', 'flexible', 'any') NULL,
+    urgent_income_need ENUM('yes', 'no') NULL,
+    indoor_outdoor_preference ENUM('indoor', 'outdoor', 'both') NULL,
+    manual_work_acceptance ENUM('low', 'medium', 'high') NULL,
+    dependents_count INT UNSIGNED NOT NULL DEFAULT 0,
+    family_support_available ENUM('yes', 'no') NULL,
+    travel_ability ENUM('low', 'medium', 'high') NULL,
+    work_hour_limitations ENUM('strict', 'moderate', 'flexible') NULL,
+    risk_tolerance ENUM('low', 'medium', 'high') NULL,
+    questionnaire_completed_level ENUM('quick', 'detailed') NOT NULL DEFAULT 'quick',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_user_profiles_user_id (user_id),
+    KEY idx_user_profiles_state (state_id),
+    KEY idx_user_profiles_district (district_id),
+    CONSTRAINT fk_user_profiles_user
+        FOREIGN KEY (user_id) REFERENCES jobs_users (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_user_profile_resources (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    has_land TINYINT(1) NOT NULL DEFAULT 0,
+    land_size_text VARCHAR(100) NULL,
+    has_shop_space TINYINT(1) NOT NULL DEFAULT 0,
+    has_home_work_space TINYINT(1) NOT NULL DEFAULT 0,
+    has_smartphone TINYINT(1) NOT NULL DEFAULT 0,
+    has_computer TINYINT(1) NOT NULL DEFAULT 0,
+    has_internet TINYINT(1) NOT NULL DEFAULT 0,
+    has_vehicle TINYINT(1) NOT NULL DEFAULT 0,
+    has_tools_equipment TINYINT(1) NOT NULL DEFAULT 0,
+    tools_equipment_text VARCHAR(500) NULL,
+    has_family_help TINYINT(1) NOT NULL DEFAULT 0,
+    family_help_text VARCHAR(500) NULL,
+    notes TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_user_profile_resources_user_id (user_id),
+    CONSTRAINT fk_user_profile_resources_user
+        FOREIGN KEY (user_id) REFERENCES jobs_users (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+-- ---------------------------------------------------------
+-- ADMIN USERS
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_admin_users (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    full_name VARCHAR(150) NOT NULL,
+    email VARCHAR(190) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'editor', 'reviewer') NOT NULL DEFAULT 'editor',
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    last_login_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_admin_users_email (email),
+    KEY idx_admin_users_role (role),
+    KEY idx_admin_users_status (status)
+) ;
+
+-- ---------------------------------------------------------
+-- CATEGORIES / OPPORTUNITIES
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_categories (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(120) NOT NULL,
+    slug VARCHAR(140) NOT NULL,
+    description TEXT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_opportunity_categories_slug (slug),
+    UNIQUE KEY uq_opportunity_categories_name (name),
+    KEY idx_opportunity_categories_status (status)
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunities (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    category_id INT UNSIGNED NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(280) NOT NULL,
+    short_summary VARCHAR(500) NOT NULL,
+    full_description LONGTEXT NULL,
+
+    opportunity_type ENUM(
+        'job',
+        'home_based_work',
+        'self_employment',
+        'micro_business'
+    ) NOT NULL,
+
+    suitable_for_text TEXT NULL,
+    not_suitable_for_text TEXT NULL,
+
+    min_age TINYINT UNSIGNED NULL,
+    max_age TINYINT UNSIGNED NULL,
+
+    min_education_level ENUM(
+        'none',
+        'primary',
+        'middle',
+        'secondary',
+        'higher_secondary',
+        'vocational',
+        'diploma',
+        'graduate',
+        'postgraduate'
+    ) NOT NULL DEFAULT 'none',
+
+    preferred_education_level ENUM(
+        'none',
+        'primary',
+        'middle',
+        'secondary',
+        'higher_secondary',
+        'vocational',
+        'diploma',
+        'graduate',
+        'postgraduate'
+    ) NULL,
+
+    prior_experience_required ENUM('no', 'preferred', 'required') NOT NULL DEFAULT 'no',
+    digital_literacy_level ENUM('none', 'basic', 'moderate', 'strong') NOT NULL DEFAULT 'none',
+    manual_effort_level ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'low',
+    home_based_suitability ENUM('yes', 'partial', 'no') NOT NULL DEFAULT 'no',
+
+    investment_min DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    investment_max DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    earning_min DECIMAL(12,2) NULL,
+    earning_max DECIMAL(12,2) NULL,
+
+    time_to_start_label ENUM(
+        'immediate',
+        'within_1_week',
+        'within_1_month',
+        'more_than_1_month'
+    ) NOT NULL DEFAULT 'within_1_month',
+
+    growth_potential ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'medium',
+
+    land_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    shop_space_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    internet_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    computer_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    smartphone_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    vehicle_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    tools_required ENUM('no', 'helpful', 'required') NOT NULL DEFAULT 'no',
+    tools_required_text VARCHAR(500) NULL,
+
+    family_support_helpful ENUM('no', 'yes') NOT NULL DEFAULT 'no',
+    physical_effort_level ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'low',
+    risk_level ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'medium',
+    scalability_level ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'medium',
+
+    urban_suitability ENUM('high', 'medium', 'low') NOT NULL DEFAULT 'medium',
+    semi_urban_suitability ENUM('high', 'medium', 'low') NOT NULL DEFAULT 'medium',
+    rural_suitability ENUM('high', 'medium', 'low') NOT NULL DEFAULT 'medium',
+
+    market_dependency_notes TEXT NULL,
+    raw_material_dependency_notes TEXT NULL,
+    first_income_timeline VARCHAR(150) NULL,
+    success_tips TEXT NULL,
+    common_mistakes TEXT NULL,
+
+    status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft',
+    featured_flag TINYINT(1) NOT NULL DEFAULT 0,
+
+    created_by BIGINT UNSIGNED NULL,
+    updated_by BIGINT UNSIGNED NULL,
+    published_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_opportunities_slug (slug),
+    KEY idx_opportunities_category (category_id),
+    KEY idx_opportunities_type (opportunity_type),
+    KEY idx_opportunities_status (status),
+    KEY idx_opportunities_featured (featured_flag),
+    KEY idx_opportunities_home_based (home_based_suitability),
+    KEY idx_opportunities_investment (investment_min, investment_max),
+    CONSTRAINT fk_opportunities_category
+        FOREIGN KEY (category_id) REFERENCES jobs_opportunity_categories (id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_opportunities_created_by
+        FOREIGN KEY (created_by) REFERENCES jobs_admin_users (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_opportunities_updated_by
+        FOREIGN KEY (updated_by) REFERENCES jobs_admin_users (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_tags (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(120) NOT NULL,
+    slug VARCHAR(140) NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_opportunity_tags_name (name),
+    UNIQUE KEY uq_opportunity_tags_slug (slug)
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_tag_map (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    tag_id INT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_opportunity_tag_map (opportunity_id, tag_id),
+    KEY idx_opportunity_tag_map_tag (tag_id),
+    CONSTRAINT fk_opportunity_tag_map_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_opportunity_tag_map_tag
+        FOREIGN KEY (tag_id) REFERENCES jobs_opportunity_tags (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_steps (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    step_no SMALLINT UNSIGNED NOT NULL,
+    step_title VARCHAR(255) NOT NULL,
+    step_description TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_opportunity_steps_order (opportunity_id, step_no),
+    CONSTRAINT fk_opportunity_steps_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_risks (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    risk_title VARCHAR(255) NOT NULL,
+    risk_description TEXT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_opportunity_risks_opportunity (opportunity_id),
+    CONSTRAINT fk_opportunity_risks_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_learning_resources (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    resource_type ENUM('article', 'video', 'course', 'government', 'other') NOT NULL DEFAULT 'article',
+    provider_name VARCHAR(150) NULL,
+    resource_url VARCHAR(500) NULL,
+    description TEXT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_opportunity_learning_resources_opportunity (opportunity_id),
+    CONSTRAINT fk_opportunity_learning_resources_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_faqs (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    question VARCHAR(500) NOT NULL,
+    answer TEXT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_opportunity_faqs_opportunity (opportunity_id),
+    CONSTRAINT fk_opportunity_faqs_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_related_opportunities (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    related_opportunity_id BIGINT UNSIGNED NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_related_opportunities_pair (opportunity_id, related_opportunity_id),
+    CONSTRAINT fk_related_opportunities_main
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_related_opportunities_related
+        FOREIGN KEY (related_opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+-- ---------------------------------------------------------
+-- LOCATION TABLES
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_states (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(120) NOT NULL,
+    slug VARCHAR(140) NOT NULL,
+    code VARCHAR(10) NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_states_name (name),
+    UNIQUE KEY uq_states_slug (slug),
+    KEY idx_states_status (status)
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_districts (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    state_id INT UNSIGNED NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    slug VARCHAR(170) NOT NULL,
+    district_type ENUM('urban', 'semi_urban', 'rural', 'mixed') NOT NULL DEFAULT 'mixed',
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_districts_state_name (state_id, name),
+    UNIQUE KEY uq_districts_state_slug (state_id, slug),
+    KEY idx_districts_state (state_id),
+    KEY idx_districts_type (district_type),
+    CONSTRAINT fk_districts_state
+        FOREIGN KEY (state_id) REFERENCES jobs_states (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_district_context_tags (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    district_id INT UNSIGNED NOT NULL,
+    context_tag VARCHAR(100) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_district_context_tag (district_id, context_tag),
+    CONSTRAINT fk_district_context_tags_district
+        FOREIGN KEY (district_id) REFERENCES jobs_districts (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_location_rules (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    state_id INT UNSIGNED NULL,
+    district_id INT UNSIGNED NULL,
+    suitability_level ENUM('high', 'medium', 'low', 'not_recommended') NOT NULL DEFAULT 'medium',
+    notes TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_opportunity_location_rules_opportunity (opportunity_id),
+    KEY idx_opportunity_location_rules_state (state_id),
+    KEY idx_opportunity_location_rules_district (district_id),
+    CONSTRAINT fk_opportunity_location_rules_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_opportunity_location_rules_state
+        FOREIGN KEY (state_id) REFERENCES jobs_states (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_opportunity_location_rules_district
+        FOREIGN KEY (district_id) REFERENCES jobs_districts (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT chk_opportunity_location_rules_ref
+        CHECK (
+            state_id IS NOT NULL OR district_id IS NOT NULL
+        )
+) ;
+
+-- ---------------------------------------------------------
+-- RECOMMENDATION / SCORING
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_scoring_weights (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    rule_key VARCHAR(100) NOT NULL,
+    weight_value DECIMAL(8,2) NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    updated_by BIGINT UNSIGNED NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_scoring_weights_rule_key (rule_key),
+    CONSTRAINT fk_scoring_weights_updated_by
+        FOREIGN KEY (updated_by) REFERENCES jobs_admin_users (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_opportunity_profile_rules (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    rule_type VARCHAR(100) NOT NULL,
+    operator_type ENUM('=', '!=', '>', '>=', '<', '<=', 'in', 'not_in') NOT NULL DEFAULT '=',
+    rule_value VARCHAR(255) NOT NULL,
+    score_impact DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+    is_required TINYINT(1) NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_opportunity_profile_rules_opportunity (opportunity_id),
+    KEY idx_opportunity_profile_rules_type (rule_type),
+    CONSTRAINT fk_opportunity_profile_rules_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+-- ---------------------------------------------------------
+-- USER INTERACTIONS
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_user_saved_opportunities (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_user_saved_opportunities (user_id, opportunity_id),
+    KEY idx_user_saved_opportunities_opportunity (opportunity_id),
+    CONSTRAINT fk_user_saved_opportunities_user
+        FOREIGN KEY (user_id) REFERENCES jobs_users (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_user_saved_opportunities_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_user_recent_views (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    opportunity_id BIGINT UNSIGNED NOT NULL,
+    viewed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_user_recent_views_user (user_id),
+    KEY idx_user_recent_views_opportunity (opportunity_id),
+    KEY idx_user_recent_views_viewed_at (viewed_at),
+    CONSTRAINT fk_user_recent_views_user
+        FOREIGN KEY (user_id) REFERENCES jobs_users (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_user_recent_views_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_user_feedback (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NULL,
+    opportunity_id BIGINT UNSIGNED NULL,
+    feedback_type ENUM(
+        'recommendation_useful',
+        'opportunity_useful',
+        'general_feedback',
+        'interested',
+        'not_interested'
+    ) NOT NULL,
+    feedback_value VARCHAR(100) NOT NULL,
+    feedback_text TEXT NULL,
+    page_type ENUM('home', 'browse', 'recommendation', 'opportunity', 'dashboard', 'other') NOT NULL DEFAULT 'other',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_user_feedback_user (user_id),
+    KEY idx_user_feedback_opportunity (opportunity_id),
+    KEY idx_user_feedback_type (feedback_type),
+    CONSTRAINT fk_user_feedback_user
+        FOREIGN KEY (user_id) REFERENCES jobs_users (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_user_feedback_opportunity
+        FOREIGN KEY (opportunity_id) REFERENCES jobs_opportunities (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+) ;
+
+-- ---------------------------------------------------------
+-- SITE SUPPORT
+-- ---------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS jobs_site_faqs (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    question VARCHAR(500) NOT NULL,
+    answer TEXT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_site_faqs_status (status)
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_featured_sections (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    section_key VARCHAR(100) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    subtitle VARCHAR(500) NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_featured_sections_key (section_key)
+) ;
+
+CREATE TABLE IF NOT EXISTS jobs_audit_logs (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    admin_user_id BIGINT UNSIGNED NULL,
+    action_type VARCHAR(100) NOT NULL,
+    entity_type VARCHAR(100) NOT NULL,
+    entity_id BIGINT UNSIGNED NULL,
+    action_details TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_audit_logs_admin (admin_user_id),
+    KEY idx_audit_logs_entity (entity_type, entity_id),
+    CONSTRAINT fk_audit_logs_admin_user
+        FOREIGN KEY (admin_user_id) REFERENCES jobs_admin_users (id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+) ;
+
+SET FOREIGN_KEY_CHECKS = 1;
