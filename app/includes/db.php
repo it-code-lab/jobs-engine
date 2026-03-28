@@ -1,0 +1,9 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../config/database.php';
+
+function db(): PDO
+{
+    return getPDO();
+}
