@@ -23,8 +23,8 @@ if (!isset($pageTitle)) {
             <nav class="main-nav">
                 <a href="<?= e(buildUrl('index.php')) ?>">Home</a>
                 <a href="<?= e(buildUrl('opportunities.php')) ?>">Browse Opportunities</a>
-                <a href="#">How It Works</a>
-                <a href="#">Login</a>
+                <!-- <a href="#">How It Works</a>
+                <a href="#">Login</a> -->
             </nav>
         </div>
     </header>

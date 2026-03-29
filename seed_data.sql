@@ -1,5 +1,5 @@
 -- =========================================================
--- Career and Livelihood Guidance Platform - India V1
+-- Jobs Platform - India V1
 -- Starter Seed Data
 -- =========================================================
 
