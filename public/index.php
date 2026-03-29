@@ -20,7 +20,7 @@ require_once __DIR__ . '/../app/includes/header.php';
         </p>
         <div class="hero-actions">
             <a class="btn btn-primary" href="<?= e(buildUrl('opportunities.php')) ?>">Browse Opportunities</a>
-            <a class="btn btn-secondary" href="#">Start Guided Discovery</a>
+            <a class="btn btn-secondary" href="<?= e(buildUrl('find-work.php')) ?>">Start Guided Discovery</a>
         </div>
     </div>
 </section>
