@@ -36,9 +36,18 @@ class OpportunityService
         $params = [];
 
         if ($search !== '') {
-            $sql .= " AND (o.title LIKE :search OR o.short_summary LIKE :search OR c.name LIKE :search)";
-            $params[':search'] = '%' . $search . '%';
+            // Use unique keys for each placeholder
+            $sql .= " AND (o.title LIKE :search1 OR o.short_summary LIKE :search2 OR c.name LIKE :search3)";
+            
+            $searchTerm = '%' . $search . '%';
+            $params[':search1'] = $searchTerm;
+            $params[':search2'] = $searchTerm;
+            $params[':search3'] = $searchTerm;
         }
+        // if ($search !== '') {
+        //     $sql .= " AND (o.title LIKE :search OR o.short_summary LIKE :search OR c.name LIKE :search)";
+        //     $params[':search'] = '%' . $search . '%';
+        // }
 
         if ($type !== '') {
             $sql .= " AND o.opportunity_type = :type";
@@ -62,6 +71,41 @@ class OpportunityService
     }
 
     public static function countPublishedOpportunities(string $search = '', string $type = ''): int
+    {
+        $pdo = db();
+
+        $sql = "
+            SELECT COUNT(*) AS total
+            FROM jobs_opportunities o
+            INNER JOIN jobs_opportunity_categories c ON c.id = o.category_id
+            WHERE o.status = 'published'
+        ";
+
+        $params = [];
+
+        if ($search !== '') {
+            // Change :search to :search1, :search2, and :search3
+            $sql .= " AND (o.title LIKE :search1 OR o.short_summary LIKE :search2 OR c.name LIKE :search3)";
+            
+            $searchTerm = '%' . $search . '%';
+            $params[':search1'] = $searchTerm;
+            $params[':search2'] = $searchTerm;
+            $params[':search3'] = $searchTerm;
+        }
+
+        if ($type !== '') {
+            $sql .= " AND o.opportunity_type = :type";
+            $params[':type'] = $type;
+        }
+
+        $stmt = $pdo->prepare($sql);
+        
+        // Now $params contains the exact number of keys matching the SQL string
+        $stmt->execute($params);
+
+        return (int)$stmt->fetchColumn();
+    }
+    public static function countPublishedOpportunities_old(string $search = '', string $type = ''): int
     {
         $pdo = db();
 

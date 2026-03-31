@@ -1,0 +1,16 @@
+I am building a website that will help people learn about different jobs and work they can do based on their location (used for things like market accessibility, raw material availability checks), resources they have (land, money etc.), education level, age, people they have to support and other criteria's. Starting with: country: India 
+
+audience: unemployed adults, youth, homemakers, small-capital seekers 
+
+opportunity types: jobs, home-based work, self-employment, micro-business 
+
+geography: state/province + city/district level
+
+Below are sample rows inserted in one of the data table. I need to complete the list:
+
+=========================
+I am building a website that will help people learn about different jobs and work they can do based on their location (used for things like market accessibility, raw material availability checks), resources they have (land, money etc.), education level, age, people they have to support and other criteria's. Starting with: country: India audience: unemployed adults, youth, homemakers, small-capital seekers opportunity types: jobs, home-based work, self-employment, micro-business geography: state/province + city/district level. Attached are the database design and sample seed data. I need to complete the data in the tables following the existing design.
+
+Can you please help create detailed rows in table jobs_opportunities and jobs_opportunity_tag_map, jobs_opportunity_steps, jobs_opportunity_risks, jobs_opportunity_faqs, jobs_related_opportunities, jobs_opportunity_location_rules for one jobs_opportunities at a time. 
+
+Lets start with - Travel booking agent
