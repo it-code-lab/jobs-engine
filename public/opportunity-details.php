@@ -29,12 +29,40 @@ require_once __DIR__ . '/../app/includes/header.php';
 
 <section class="section">
     <div class="container detail-page">
-        <div class="detail-header">
-            <span class="card-category"><?= e($item['category_name']) ?></span>
-            <h1><?= e($item['title']) ?></h1>
-            <p class="lead"><?= e($item['short_summary']) ?></p>
-        </div>
+        <div class="detail-header detail-header-enhanced">
+            <div class="detail-header-content">
+                <span class="card-category">
+                    <span class="icon"><?= svgIcon(getOpportunityTypeIcon($item['opportunity_type'])) ?></span>
+                    <?= e($item['category_name']) ?>
+                </span>
 
+                <h1><?= e($item['title']) ?></h1>
+                <p class="lead"><?= e($item['short_summary']) ?></p>
+
+                <div class="detail-highlights">
+                    <span class="meta-pill">
+                        <span class="icon"><?= svgIcon('rupee') ?></span>
+                        <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?>
+                    </span>
+                    <span class="meta-pill">
+                        <span class="icon"><?= svgIcon('growth') ?></span>
+                        <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?>
+                    </span>
+                    <span class="meta-pill">
+                        <span class="icon"><?= svgIcon('clock') ?></span>
+                        <?= e(str_replace('_', ' ', $item['time_to_start_label'])) ?>
+                    </span>
+                </div>
+            </div>
+
+            <div class="detail-header-image">
+                <img
+                    src="<?= e(getOpportunityImage($item['slug'])) ?>"
+                    alt="<?= e($item['title']) ?>"
+                    loading="eager"
+                >
+            </div>
+        </div>        
         <div class="detail-grid">
             <div class="detail-main">
                 <section class="detail-card">
@@ -57,14 +85,21 @@ require_once __DIR__ . '/../app/includes/header.php';
                     <?php if (empty($steps)): ?>
                         <p>No steps added yet.</p>
                     <?php else: ?>
-                        <ol class="steps-list">
+
+
+                        <ol class="steps-list enhanced-steps">
                             <?php foreach ($steps as $step): ?>
                                 <li>
-                                    <strong><?= e($step['step_title']) ?></strong><br>
-                                    <?= e($step['step_description']) ?>
+                                    <span class="step-icon"><?= svgIcon('check') ?></span>
+                                    <div>
+                                        <strong><?= e($step['step_title']) ?></strong><br>
+                                        <?= e($step['step_description']) ?>
+                                    </div>
                                 </li>
                             <?php endforeach; ?>
                         </ol>
+
+
                     <?php endif; ?>
                 </section>
 
@@ -73,14 +108,21 @@ require_once __DIR__ . '/../app/includes/header.php';
                     <?php if (empty($risks)): ?>
                         <p>No risks added yet.</p>
                     <?php else: ?>
-                        <ul class="risk-list">
+
+
+                        <ul class="risk-list enhanced-risks">
                             <?php foreach ($risks as $risk): ?>
                                 <li>
-                                    <strong><?= e($risk['risk_title']) ?>:</strong>
-                                    <?= e($risk['risk_description']) ?>
+                                    <span class="risk-icon"><?= svgIcon('warning') ?></span>
+                                    <div>
+                                        <strong><?= e($risk['risk_title']) ?>:</strong>
+                                        <?= e($risk['risk_description']) ?>
+                                    </div>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
+
+
                     <?php endif; ?>
                 </section>
             </div>
@@ -88,30 +130,31 @@ require_once __DIR__ . '/../app/includes/header.php';
             <aside class="detail-sidebar">
                 <div class="detail-card">
                     <h3>Quick Facts</h3>
-                    <ul class="facts-list">
-                        <li><strong>Type:</strong> <?= e(str_replace('_', ' ', ucfirst($item['opportunity_type']))) ?></li>
-                        <li><strong>Investment:</strong> <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?></li>
-                        <li><strong>Earnings:</strong> <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?></li>
-                        <li><strong>Time to Start:</strong> <?= e(str_replace('_', ' ', $item['time_to_start_label'])) ?></li>
-                        <li><strong>Home-Based:</strong> <?= e($item['home_based_suitability']) ?></li>
-                        <li><strong>Risk Level:</strong> <?= e(ucfirst($item['risk_level'])) ?></li>
-                        <li><strong>Growth Potential:</strong> <?= e(ucfirst($item['growth_potential'])) ?></li>
+                    <ul class="facts-list facts-list-icons">
+                        <li><span class="icon"><?= svgIcon(getOpportunityTypeIcon($item['opportunity_type'])) ?></span><strong>Type:</strong> <?= e(formatOpportunityType($item['opportunity_type'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('rupee') ?></span><strong>Investment:</strong> <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('growth') ?></span><strong>Earnings:</strong> <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('clock') ?></span><strong>Time to Start:</strong> <?= e(str_replace('_', ' ', $item['time_to_start_label'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('home-check') ?></span><strong>Home-Based:</strong> <?= e($item['home_based_suitability']) ?></li>
+                        <li><span class="icon"><?= svgIcon('shield') ?></span><strong>Risk Level:</strong> <?= e(ucfirst($item['risk_level'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('growth') ?></span><strong>Growth Potential:</strong> <?= e(ucfirst($item['growth_potential'])) ?></li>
                     </ul>
-                </div>
+                </div>                
 
                 <div class="detail-card">
                     <h3>Requirements</h3>
-                    <ul class="facts-list">
-                        <li><strong>Minimum Education:</strong> <?= e($item['min_education_level']) ?></li>
-                        <li><strong>Experience:</strong> <?= e($item['prior_experience_required']) ?></li>
-                        <li><strong>Digital Literacy:</strong> <?= e($item['digital_literacy_level']) ?></li>
-                        <li><strong>Manual Effort:</strong> <?= e($item['manual_effort_level']) ?></li>
-                        <li><strong>Land:</strong> <?= e($item['land_required']) ?></li>
-                        <li><strong>Shop Space:</strong> <?= e($item['shop_space_required']) ?></li>
-                        <li><strong>Internet:</strong> <?= e($item['internet_required']) ?></li>
-                        <li><strong>Vehicle:</strong> <?= e($item['vehicle_required']) ?></li>
+                    <ul class="facts-list facts-list-icons">
+                        <li><span class="icon"><?= svgIcon('education') ?></span><strong>Minimum Education:</strong> <?= e($item['min_education_level']) ?></li>
+                        <li><span class="icon"><?= svgIcon('check') ?></span><strong>Experience:</strong> <?= e($item['prior_experience_required']) ?></li>
+                        <li><span class="icon"><?= svgIcon('internet') ?></span><strong>Digital Literacy:</strong> <?= e($item['digital_literacy_level']) ?></li>
+                        <li><span class="icon"><?= svgIcon('check') ?></span><strong>Manual Effort:</strong> <?= e($item['manual_effort_level']) ?></li>
+                        <li><span class="icon"><?= svgIcon('land') ?></span><strong>Land:</strong> <?= e($item['land_required']) ?></li>
+                        <li><span class="icon"><?= svgIcon('shop-space') ?></span><strong>Shop Space:</strong> <?= e($item['shop_space_required']) ?></li>
+                        <li><span class="icon"><?= svgIcon('internet') ?></span><strong>Internet:</strong> <?= e($item['internet_required']) ?></li>
+                        <li><span class="icon"><?= svgIcon('vehicle') ?></span><strong>Vehicle:</strong> <?= e($item['vehicle_required']) ?></li>
                     </ul>
-                </div>
+                </div>                
+
             </aside>
         </div>
     </div>

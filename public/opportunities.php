@@ -49,35 +49,77 @@ require_once __DIR__ . '/../app/includes/header.php';
                     <p>No opportunities found.</p>
                 </div>
             <?php else: ?>
+
                 <?php foreach ($items as $item): ?>
-                    <article class="card">
+                    <article class="card opportunity-card">
+                        <a class="card-image-wrap" href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
+                            <img
+                                class="card-image"
+                                src="<?= e(getOpportunityImage($item['slug'])) ?>"
+                                alt="<?= e($item['title']) ?>"
+                                loading="lazy"
+                            >
+                            <span class="card-category floating-badge">
+                                <span class="icon"><?= svgIcon(getOpportunityTypeIcon($item['opportunity_type'])) ?></span>
+                                <?= e($item['category_name']) ?>
+                            </span>
+                        </a>
+
                         <div class="card-body">
-                            <span class="card-category"><?= e($item['category_name']) ?></span>
-                            <h3>
-                                <a href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
-                                    <?= e($item['title']) ?>
-                                </a>
-                            </h3>
+                            <div class="title-row">
+                                <h3>
+                                    <a href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
+                                        <?= e($item['title']) ?>
+                                    </a>
+                                </h3>
+                            </div>
 
                             <p><?= e($item['short_summary']) ?></p>
 
-                            <div class="meta">
-                                <span>Type: <?= e(str_replace('_', ' ', ucfirst($item['opportunity_type']))) ?></span>
-                                <span>Home-based: <?= e($item['home_based_suitability']) ?></span>
-                                <span>Risk: <?= e(ucfirst($item['risk_level'])) ?></span>
+                            <div class="meta-grid compact">
+                                <span class="meta-pill">
+                                    <span class="icon"><?= svgIcon(getOpportunityTypeIcon($item['opportunity_type'])) ?></span>
+                                    <?= e(formatOpportunityType($item['opportunity_type'])) ?>
+                                </span>
+
+                                <span class="meta-pill">
+                                    <span class="icon"><?= svgIcon('home-check') ?></span>
+                                    Home-based: <?= e(ucfirst($item['home_based_suitability'])) ?>
+                                </span>
+
+                                <span class="meta-pill">
+                                    <span class="icon"><?= svgIcon('shield') ?></span>
+                                    Risk: <?= e(ucfirst($item['risk_level'])) ?>
+                                </span>
+
+                                <span class="meta-pill">
+                                    <span class="icon"><?= svgIcon('clock') ?></span>
+                                    <?= e(str_replace('_', ' ', $item['time_to_start_label'] ?? '')) ?>
+                                </span>
                             </div>
 
-                            <div class="meta">
-                                <span>Investment: <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?></span>
-                                <span>Earnings: <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?></span>
+                            <div class="meta-grid">
+                                <span class="meta-pill">
+                                    <span class="icon"><?= svgIcon('rupee') ?></span>
+                                    Investment: <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?>
+                                </span>
+
+                                <span class="meta-pill">
+                                    <span class="icon"><?= svgIcon('growth') ?></span>
+                                    Earnings: <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?>
+                                </span>
                             </div>
 
-                            <a class="btn btn-secondary" href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
-                                View Details
-                            </a>
+                            <div class="card-actions">
+                                <a class="btn btn-secondary" href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
+                                    View Details
+                                </a>
+                            </div>
                         </div>
                     </article>
-                <?php endforeach; ?>
+                <?php endforeach; ?>                
+
+
             <?php endif; ?>
         </div>
 

@@ -91,23 +91,10 @@ require_once __DIR__ . '/../app/includes/header.php';
         <?php else: ?>
             <div class="card-grid">
                 <?php foreach ($results as $item): ?>
-
-
-
-                    <article class="card opportunity-card recommended-card">
-                        <a class="card-image-wrap" href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
-                            <img
-                                class="card-image"
-                                src="<?= e(getOpportunityImage($item['slug'])) ?>"
-                                alt="<?= e($item['title']) ?>"
-                                loading="lazy"
-                            >
-                            <span class="card-category floating-badge fit-badge">
-                                <?= e($item['fit_label']) ?>
-                            </span>
-                        </a>
-
+                    <article class="card">
                         <div class="card-body">
+                            <span class="card-category"><?= e($item['fit_label']) ?></span>
+
                             <h3>
                                 <a href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
                                     <?= e($item['title']) ?>
@@ -116,33 +103,16 @@ require_once __DIR__ . '/../app/includes/header.php';
 
                             <p><?= e($item['short_summary']) ?></p>
 
-                            <div class="match-score">
-                                <div class="match-score-label">
-                                    <strong>Match Score:</strong> <?= e((string)$item['score']) ?>/100
-                                </div>
-                                <div class="progress-bar">
-                                    <span style="width: <?= max(0, min(100, (int)$item['score'])) ?>%"></span>
-                                </div>
-                            </div>
-
-                            <div class="meta-grid">
-                                <span class="meta-pill">
-                                    <span class="icon"><?= svgIcon('rupee') ?></span>
-                                    Investment: <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?>
-                                </span>
-                                <span class="meta-pill">
-                                    <span class="icon"><?= svgIcon('growth') ?></span>
-                                    Earnings: <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?>
-                                </span>
-                                <span class="meta-pill">
-                                    <span class="icon"><?= svgIcon('clock') ?></span>
-                                    <?= e(str_replace('_', ' ', $item['time_to_start_label'])) ?>
-                                </span>
+                            <div class="meta">
+                                <span><strong>Score:</strong> <?= e((string)$item['score']) ?></span>
+                                <span><strong>Investment:</strong> <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?></span>
+                                <span><strong>Earnings:</strong> <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?></span>
+                                <span><strong>Time to Start:</strong> <?= e(str_replace('_', ' ', $item['time_to_start_label'])) ?></span>
                             </div>
 
                             <?php if (!empty($item['reasons'])): ?>
-                                <div class="insight-box positive">
-                                    <strong>Why this matches you</strong>
+                                <div style="margin: 14px 0;">
+                                    <strong>Why this matches you:</strong>
                                     <ul class="risk-list">
                                         <?php foreach ($item['reasons'] as $reason): ?>
                                             <li><?= e($reason) ?></li>
@@ -152,8 +122,8 @@ require_once __DIR__ . '/../app/includes/header.php';
                             <?php endif; ?>
 
                             <?php if (!empty($item['warnings'])): ?>
-                                <div class="insight-box caution">
-                                    <strong>Things to note</strong>
+                                <div style="margin: 14px 0;">
+                                    <strong>Things to note:</strong>
                                     <ul class="risk-list">
                                         <?php foreach ($item['warnings'] as $warning): ?>
                                             <li><?= e($warning) ?></li>
@@ -162,16 +132,11 @@ require_once __DIR__ . '/../app/includes/header.php';
                                 </div>
                             <?php endif; ?>
 
-                            <div class="card-actions">
-                                <a class="btn btn-secondary" href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
-                                    View Details
-                                </a>
-                            </div>
+                            <a class="btn btn-secondary" href="<?= e(buildUrl('opportunity-details.php?slug=' . urlencode($item['slug']))) ?>">
+                                View Details
+                            </a>
                         </div>
                     </article>
-
-
-
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
