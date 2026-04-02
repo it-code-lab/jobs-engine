@@ -231,193 +231,320 @@ public static function getByIdForAdmin(int $id): ?array
 public static function createOpportunity(array $data, int $adminUserId): int
 {
     $pdo = db();
+    $pdo->beginTransaction();
 
-    $sql = "
-        INSERT INTO jobs_opportunities (
-            category_id, title, slug, short_summary, full_description, opportunity_type,
-            suitable_for_text, not_suitable_for_text,
-            min_age, max_age, min_education_level, preferred_education_level,
-            prior_experience_required, digital_literacy_level, manual_effort_level, home_based_suitability,
-            investment_min, investment_max, earning_min, earning_max, time_to_start_label, growth_potential,
-            land_required, shop_space_required, internet_required, computer_required, smartphone_required,
-            vehicle_required, tools_required, tools_required_text, family_support_helpful, physical_effort_level,
-            risk_level, scalability_level, urban_suitability, semi_urban_suitability, rural_suitability,
-            market_dependency_notes, raw_material_dependency_notes, first_income_timeline, success_tips, common_mistakes,
-            status, featured_flag, created_by, updated_by, published_at
-        ) VALUES (
-            :category_id, :title, :slug, :short_summary, :full_description, :opportunity_type,
-            :suitable_for_text, :not_suitable_for_text,
-            :min_age, :max_age, :min_education_level, :preferred_education_level,
-            :prior_experience_required, :digital_literacy_level, :manual_effort_level, :home_based_suitability,
-            :investment_min, :investment_max, :earning_min, :earning_max, :time_to_start_label, :growth_potential,
-            :land_required, :shop_space_required, :internet_required, :computer_required, :smartphone_required,
-            :vehicle_required, :tools_required, :tools_required_text, :family_support_helpful, :physical_effort_level,
-            :risk_level, :scalability_level, :urban_suitability, :semi_urban_suitability, :rural_suitability,
-            :market_dependency_notes, :raw_material_dependency_notes, :first_income_timeline, :success_tips, :common_mistakes,
-            :status, :featured_flag, :created_by, :updated_by, :published_at
-        )
-    ";
+    try {
+        // existing insert code stays the same
+        $sql = "
+            INSERT INTO jobs_opportunities (
+                category_id, title, slug, short_summary, full_description, opportunity_type,
+                suitable_for_text, not_suitable_for_text,
+                min_age, max_age, min_education_level, preferred_education_level,
+                prior_experience_required, digital_literacy_level, manual_effort_level, home_based_suitability,
+                investment_min, investment_max, earning_min, earning_max, time_to_start_label, growth_potential,
+                land_required, shop_space_required, internet_required, computer_required, smartphone_required,
+                vehicle_required, tools_required, tools_required_text, family_support_helpful, physical_effort_level,
+                risk_level, scalability_level, urban_suitability, semi_urban_suitability, rural_suitability,
+                market_dependency_notes, raw_material_dependency_notes, first_income_timeline, success_tips, common_mistakes,
+                status, featured_flag, created_by, updated_by, published_at
+            ) VALUES (
+                :category_id, :title, :slug, :short_summary, :full_description, :opportunity_type,
+                :suitable_for_text, :not_suitable_for_text,
+                :min_age, :max_age, :min_education_level, :preferred_education_level,
+                :prior_experience_required, :digital_literacy_level, :manual_effort_level, :home_based_suitability,
+                :investment_min, :investment_max, :earning_min, :earning_max, :time_to_start_label, :growth_potential,
+                :land_required, :shop_space_required, :internet_required, :computer_required, :smartphone_required,
+                :vehicle_required, :tools_required, :tools_required_text, :family_support_helpful, :physical_effort_level,
+                :risk_level, :scalability_level, :urban_suitability, :semi_urban_suitability, :rural_suitability,
+                :market_dependency_notes, :raw_material_dependency_notes, :first_income_timeline, :success_tips, :common_mistakes,
+                :status, :featured_flag, :created_by, :updated_by, :published_at
+            )
+        ";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':category_id' => $data['category_id'],
-        ':title' => $data['title'],
-        ':slug' => $data['slug'],
-        ':short_summary' => $data['short_summary'],
-        ':full_description' => $data['full_description'],
-        ':opportunity_type' => $data['opportunity_type'],
-        ':suitable_for_text' => $data['suitable_for_text'],
-        ':not_suitable_for_text' => $data['not_suitable_for_text'],
-        ':min_age' => $data['min_age'] ?: null,
-        ':max_age' => $data['max_age'] ?: null,
-        ':min_education_level' => $data['min_education_level'],
-        ':preferred_education_level' => $data['preferred_education_level'] ?: null,
-        ':prior_experience_required' => $data['prior_experience_required'],
-        ':digital_literacy_level' => $data['digital_literacy_level'],
-        ':manual_effort_level' => $data['manual_effort_level'],
-        ':home_based_suitability' => $data['home_based_suitability'],
-        ':investment_min' => $data['investment_min'] ?: 0,
-        ':investment_max' => $data['investment_max'] ?: 0,
-        ':earning_min' => $data['earning_min'] ?: null,
-        ':earning_max' => $data['earning_max'] ?: null,
-        ':time_to_start_label' => $data['time_to_start_label'],
-        ':growth_potential' => $data['growth_potential'],
-        ':land_required' => $data['land_required'],
-        ':shop_space_required' => $data['shop_space_required'],
-        ':internet_required' => $data['internet_required'],
-        ':computer_required' => $data['computer_required'],
-        ':smartphone_required' => $data['smartphone_required'],
-        ':vehicle_required' => $data['vehicle_required'],
-        ':tools_required' => $data['tools_required'],
-        ':tools_required_text' => $data['tools_required_text'],
-        ':family_support_helpful' => $data['family_support_helpful'],
-        ':physical_effort_level' => $data['physical_effort_level'],
-        ':risk_level' => $data['risk_level'],
-        ':scalability_level' => $data['scalability_level'],
-        ':urban_suitability' => $data['urban_suitability'],
-        ':semi_urban_suitability' => $data['semi_urban_suitability'],
-        ':rural_suitability' => $data['rural_suitability'],
-        ':market_dependency_notes' => $data['market_dependency_notes'],
-        ':raw_material_dependency_notes' => $data['raw_material_dependency_notes'],
-        ':first_income_timeline' => $data['first_income_timeline'],
-        ':success_tips' => $data['success_tips'],
-        ':common_mistakes' => $data['common_mistakes'],
-        ':status' => $data['status'],
-        ':featured_flag' => $data['featured_flag'],
-        ':created_by' => $adminUserId,
-        ':updated_by' => $adminUserId,
-        ':published_at' => $data['status'] === 'published' ? date('Y-m-d H:i:s') : null,
-    ]);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':category_id' => $data['category_id'],
+            ':title' => $data['title'],
+            ':slug' => $data['slug'],
+            ':short_summary' => $data['short_summary'],
+            ':full_description' => $data['full_description'],
+            ':opportunity_type' => $data['opportunity_type'],
+            ':suitable_for_text' => $data['suitable_for_text'],
+            ':not_suitable_for_text' => $data['not_suitable_for_text'],
+            ':min_age' => $data['min_age'] ?: null,
+            ':max_age' => $data['max_age'] ?: null,
+            ':min_education_level' => $data['min_education_level'],
+            ':preferred_education_level' => $data['preferred_education_level'] ?: null,
+            ':prior_experience_required' => $data['prior_experience_required'],
+            ':digital_literacy_level' => $data['digital_literacy_level'],
+            ':manual_effort_level' => $data['manual_effort_level'],
+            ':home_based_suitability' => $data['home_based_suitability'],
+            ':investment_min' => $data['investment_min'] ?: 0,
+            ':investment_max' => $data['investment_max'] ?: 0,
+            ':earning_min' => $data['earning_min'] ?: null,
+            ':earning_max' => $data['earning_max'] ?: null,
+            ':time_to_start_label' => $data['time_to_start_label'],
+            ':growth_potential' => $data['growth_potential'],
+            ':land_required' => $data['land_required'],
+            ':shop_space_required' => $data['shop_space_required'],
+            ':internet_required' => $data['internet_required'],
+            ':computer_required' => $data['computer_required'],
+            ':smartphone_required' => $data['smartphone_required'],
+            ':vehicle_required' => $data['vehicle_required'],
+            ':tools_required' => $data['tools_required'],
+            ':tools_required_text' => $data['tools_required_text'],
+            ':family_support_helpful' => $data['family_support_helpful'],
+            ':physical_effort_level' => $data['physical_effort_level'],
+            ':risk_level' => $data['risk_level'],
+            ':scalability_level' => $data['scalability_level'],
+            ':urban_suitability' => $data['urban_suitability'],
+            ':semi_urban_suitability' => $data['semi_urban_suitability'],
+            ':rural_suitability' => $data['rural_suitability'],
+            ':market_dependency_notes' => $data['market_dependency_notes'],
+            ':raw_material_dependency_notes' => $data['raw_material_dependency_notes'],
+            ':first_income_timeline' => $data['first_income_timeline'],
+            ':success_tips' => $data['success_tips'],
+            ':common_mistakes' => $data['common_mistakes'],
+            ':status' => $data['status'],
+            ':featured_flag' => $data['featured_flag'],
+            ':created_by' => $adminUserId,
+            ':updated_by' => $adminUserId,
+            ':published_at' => $data['status'] === 'published' ? date('Y-m-d H:i:s') : null,
+        ]);
 
-    return (int)$pdo->lastInsertId();
+        $newId = (int)$pdo->lastInsertId();
+
+        self::saveOpportunitySteps($pdo, $newId, $data['steps'] ?? []);
+        self::saveOpportunityRisks($pdo, $newId, $data['risks'] ?? []);
+
+        $pdo->commit();
+        return $newId;
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+
 }
 
 public static function updateOpportunity(int $id, array $data, int $adminUserId): bool
 {
     $pdo = db();
+    $pdo->beginTransaction();
 
-    $sql = "
-        UPDATE jobs_opportunities SET
-            category_id = :category_id,
-            title = :title,
-            slug = :slug,
-            short_summary = :short_summary,
-            full_description = :full_description,
-            opportunity_type = :opportunity_type,
-            suitable_for_text = :suitable_for_text,
-            not_suitable_for_text = :not_suitable_for_text,
-            min_age = :min_age,
-            max_age = :max_age,
-            min_education_level = :min_education_level,
-            preferred_education_level = :preferred_education_level,
-            prior_experience_required = :prior_experience_required,
-            digital_literacy_level = :digital_literacy_level,
-            manual_effort_level = :manual_effort_level,
-            home_based_suitability = :home_based_suitability,
-            investment_min = :investment_min,
-            investment_max = :investment_max,
-            earning_min = :earning_min,
-            earning_max = :earning_max,
-            time_to_start_label = :time_to_start_label,
-            growth_potential = :growth_potential,
-            land_required = :land_required,
-            shop_space_required = :shop_space_required,
-            internet_required = :internet_required,
-            computer_required = :computer_required,
-            smartphone_required = :smartphone_required,
-            vehicle_required = :vehicle_required,
-            tools_required = :tools_required,
-            tools_required_text = :tools_required_text,
-            family_support_helpful = :family_support_helpful,
-            physical_effort_level = :physical_effort_level,
-            risk_level = :risk_level,
-            scalability_level = :scalability_level,
-            urban_suitability = :urban_suitability,
-            semi_urban_suitability = :semi_urban_suitability,
-            rural_suitability = :rural_suitability,
-            market_dependency_notes = :market_dependency_notes,
-            raw_material_dependency_notes = :raw_material_dependency_notes,
-            first_income_timeline = :first_income_timeline,
-            success_tips = :success_tips,
-            common_mistakes = :common_mistakes,
-            status = :status,
-            featured_flag = :featured_flag,
-            updated_by = :updated_by,
-            published_at = :published_at
-        WHERE id = :id
-        LIMIT 1
-    ";
+    try {
+        $sql = "
+            UPDATE jobs_opportunities SET
+                category_id = :category_id,
+                title = :title,
+                slug = :slug,
+                short_summary = :short_summary,
+                full_description = :full_description,
+                opportunity_type = :opportunity_type,
+                suitable_for_text = :suitable_for_text,
+                not_suitable_for_text = :not_suitable_for_text,
+                min_age = :min_age,
+                max_age = :max_age,
+                min_education_level = :min_education_level,
+                preferred_education_level = :preferred_education_level,
+                prior_experience_required = :prior_experience_required,
+                digital_literacy_level = :digital_literacy_level,
+                manual_effort_level = :manual_effort_level,
+                home_based_suitability = :home_based_suitability,
+                investment_min = :investment_min,
+                investment_max = :investment_max,
+                earning_min = :earning_min,
+                earning_max = :earning_max,
+                time_to_start_label = :time_to_start_label,
+                growth_potential = :growth_potential,
+                land_required = :land_required,
+                shop_space_required = :shop_space_required,
+                internet_required = :internet_required,
+                computer_required = :computer_required,
+                smartphone_required = :smartphone_required,
+                vehicle_required = :vehicle_required,
+                tools_required = :tools_required,
+                tools_required_text = :tools_required_text,
+                family_support_helpful = :family_support_helpful,
+                physical_effort_level = :physical_effort_level,
+                risk_level = :risk_level,
+                scalability_level = :scalability_level,
+                urban_suitability = :urban_suitability,
+                semi_urban_suitability = :semi_urban_suitability,
+                rural_suitability = :rural_suitability,
+                market_dependency_notes = :market_dependency_notes,
+                raw_material_dependency_notes = :raw_material_dependency_notes,
+                first_income_timeline = :first_income_timeline,
+                success_tips = :success_tips,
+                common_mistakes = :common_mistakes,
+                status = :status,
+                featured_flag = :featured_flag,
+                updated_by = :updated_by,
+                published_at = :published_at
+            WHERE id = :id
+            LIMIT 1
+        ";
 
-    $stmt = $pdo->prepare($sql);
+        $stmt = $pdo->prepare($sql);
 
-    return $stmt->execute([
-        ':category_id' => $data['category_id'],
-        ':title' => $data['title'],
-        ':slug' => $data['slug'],
-        ':short_summary' => $data['short_summary'],
-        ':full_description' => $data['full_description'],
-        ':opportunity_type' => $data['opportunity_type'],
-        ':suitable_for_text' => $data['suitable_for_text'],
-        ':not_suitable_for_text' => $data['not_suitable_for_text'],
-        ':min_age' => $data['min_age'] ?: null,
-        ':max_age' => $data['max_age'] ?: null,
-        ':min_education_level' => $data['min_education_level'],
-        ':preferred_education_level' => $data['preferred_education_level'] ?: null,
-        ':prior_experience_required' => $data['prior_experience_required'],
-        ':digital_literacy_level' => $data['digital_literacy_level'],
-        ':manual_effort_level' => $data['manual_effort_level'],
-        ':home_based_suitability' => $data['home_based_suitability'],
-        ':investment_min' => $data['investment_min'] ?: 0,
-        ':investment_max' => $data['investment_max'] ?: 0,
-        ':earning_min' => $data['earning_min'] ?: null,
-        ':earning_max' => $data['earning_max'] ?: null,
-        ':time_to_start_label' => $data['time_to_start_label'],
-        ':growth_potential' => $data['growth_potential'],
-        ':land_required' => $data['land_required'],
-        ':shop_space_required' => $data['shop_space_required'],
-        ':internet_required' => $data['internet_required'],
-        ':computer_required' => $data['computer_required'],
-        ':smartphone_required' => $data['smartphone_required'],
-        ':vehicle_required' => $data['vehicle_required'],
-        ':tools_required' => $data['tools_required'],
-        ':tools_required_text' => $data['tools_required_text'],
-        ':family_support_helpful' => $data['family_support_helpful'],
-        ':physical_effort_level' => $data['physical_effort_level'],
-        ':risk_level' => $data['risk_level'],
-        ':scalability_level' => $data['scalability_level'],
-        ':urban_suitability' => $data['urban_suitability'],
-        ':semi_urban_suitability' => $data['semi_urban_suitability'],
-        ':rural_suitability' => $data['rural_suitability'],
-        ':market_dependency_notes' => $data['market_dependency_notes'],
-        ':raw_material_dependency_notes' => $data['raw_material_dependency_notes'],
-        ':first_income_timeline' => $data['first_income_timeline'],
-        ':success_tips' => $data['success_tips'],
-        ':common_mistakes' => $data['common_mistakes'],
-        ':status' => $data['status'],
-        ':featured_flag' => $data['featured_flag'],
-        ':updated_by' => $adminUserId,
-        ':published_at' => $data['status'] === 'published' ? date('Y-m-d H:i:s') : null,
-        ':id' => $id,
-    ]);
+        $result = $stmt->execute([
+            ':category_id' => $data['category_id'],
+            ':title' => $data['title'],
+            ':slug' => $data['slug'],
+            ':short_summary' => $data['short_summary'],
+            ':full_description' => $data['full_description'],
+            ':opportunity_type' => $data['opportunity_type'],
+            ':suitable_for_text' => $data['suitable_for_text'],
+            ':not_suitable_for_text' => $data['not_suitable_for_text'],
+            ':min_age' => $data['min_age'] ?: null,
+            ':max_age' => $data['max_age'] ?: null,
+            ':min_education_level' => $data['min_education_level'],
+            ':preferred_education_level' => $data['preferred_education_level'] ?: null,
+            ':prior_experience_required' => $data['prior_experience_required'],
+            ':digital_literacy_level' => $data['digital_literacy_level'],
+            ':manual_effort_level' => $data['manual_effort_level'],
+            ':home_based_suitability' => $data['home_based_suitability'],
+            ':investment_min' => $data['investment_min'] ?: 0,
+            ':investment_max' => $data['investment_max'] ?: 0,
+            ':earning_min' => $data['earning_min'] ?: null,
+            ':earning_max' => $data['earning_max'] ?: null,
+            ':time_to_start_label' => $data['time_to_start_label'],
+            ':growth_potential' => $data['growth_potential'],
+            ':land_required' => $data['land_required'],
+            ':shop_space_required' => $data['shop_space_required'],
+            ':internet_required' => $data['internet_required'],
+            ':computer_required' => $data['computer_required'],
+            ':smartphone_required' => $data['smartphone_required'],
+            ':vehicle_required' => $data['vehicle_required'],
+            ':tools_required' => $data['tools_required'],
+            ':tools_required_text' => $data['tools_required_text'],
+            ':family_support_helpful' => $data['family_support_helpful'],
+            ':physical_effort_level' => $data['physical_effort_level'],
+            ':risk_level' => $data['risk_level'],
+            ':scalability_level' => $data['scalability_level'],
+            ':urban_suitability' => $data['urban_suitability'],
+            ':semi_urban_suitability' => $data['semi_urban_suitability'],
+            ':rural_suitability' => $data['rural_suitability'],
+            ':market_dependency_notes' => $data['market_dependency_notes'],
+            ':raw_material_dependency_notes' => $data['raw_material_dependency_notes'],
+            ':first_income_timeline' => $data['first_income_timeline'],
+            ':success_tips' => $data['success_tips'],
+            ':common_mistakes' => $data['common_mistakes'],
+            ':status' => $data['status'],
+            ':featured_flag' => $data['featured_flag'],
+            ':updated_by' => $adminUserId,
+            ':published_at' => $data['status'] === 'published' ? date('Y-m-d H:i:s') : null,
+            ':id' => $id,
+        ]);
+
+        self::saveOpportunitySteps($pdo, $id, $data['steps'] ?? []);
+        self::saveOpportunityRisks($pdo, $id, $data['risks'] ?? []);
+
+        $pdo->commit();
+        return $result;
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }    
+
 }    
+
+
+private static function normalizeRows(array $rows): array
+{
+    $clean = [];
+
+    foreach ($rows as $row) {
+        $normalized = [];
+        foreach ($row as $key => $value) {
+            $normalized[$key] = trim((string)$value);
+        }
+        $clean[] = $normalized;
+    }
+
+    return $clean;
+}
+
+private static function saveOpportunitySteps(PDO $pdo, int $opportunityId, array $steps): void
+{
+    $pdo->prepare("DELETE FROM jobs_opportunity_steps WHERE opportunity_id = :opportunity_id")
+        ->execute([':opportunity_id' => $opportunityId]);
+
+    $steps = self::normalizeRows($steps);
+
+    $insert = $pdo->prepare("
+        INSERT INTO jobs_opportunity_steps (
+            opportunity_id, step_no, step_title, step_description
+        ) VALUES (
+            :opportunity_id, :step_no, :step_title, :step_description
+        )
+    ");
+
+    $stepNo = 1;
+    foreach ($steps as $step) {
+        $title = trim($step['step_title'] ?? '');
+        $description = trim($step['step_description'] ?? '');
+
+        if ($title === '' && $description === '') {
+            continue;
+        }
+
+        $insert->execute([
+            ':opportunity_id' => $opportunityId,
+            ':step_no' => $stepNo++,
+            ':step_title' => $title,
+            ':step_description' => $description,
+        ]);
+    }
+}
+
+private static function saveOpportunityRisks(PDO $pdo, int $opportunityId, array $risks): void
+{
+    $pdo->prepare("DELETE FROM jobs_opportunity_risks WHERE opportunity_id = :opportunity_id")
+        ->execute([':opportunity_id' => $opportunityId]);
+
+    $risks = self::normalizeRows($risks);
+
+    $insert = $pdo->prepare("
+        INSERT INTO jobs_opportunity_risks (
+            opportunity_id, sort_order, risk_title, risk_description
+        ) VALUES (
+            :opportunity_id, :sort_order, :risk_title, :risk_description
+        )
+    ");
+
+    $sortOrder = 1;
+    foreach ($risks as $risk) {
+        $title = trim($risk['risk_title'] ?? '');
+        $description = trim($risk['risk_description'] ?? '');
+
+        if ($title === '' && $description === '') {
+            continue;
+        }
+
+        $insert->execute([
+            ':opportunity_id' => $opportunityId,
+            ':sort_order' => $sortOrder++,
+            ':risk_title' => $title,
+            ':risk_description' => $description,
+        ]);
+    }
+}
+
+public static function getByIdForAdminWithChildren(int $id): ?array
+{
+    $item = self::getByIdForAdmin($id);
+
+    if (!$item) {
+        return null;
+    }
+
+    $item['steps'] = self::getOpportunitySteps($id);
+    $item['risks'] = self::getOpportunityRisks($id);
+
+    return $item;
+}
 }

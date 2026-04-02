@@ -12,8 +12,7 @@ if ($id <= 0) {
     exit('Invalid opportunity ID.');
 }
 
-// $item = OpportunityService::getByIdForAdmin($id);
-$item = OpportunityService::getByIdForAdminWithChildren($id);
+$item = OpportunityService::getByIdForAdmin($id);
 if (!$item) {
     exit('Opportunity not found.');
 }
@@ -29,8 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         OpportunityService::updateOpportunity($id, $data, (int)$adminUser['id']);
-        // $item = OpportunityService::getByIdForAdmin($id);
-        $item = OpportunityService::getByIdForAdminWithChildren($id);
+        $item = OpportunityService::getByIdForAdmin($id);
         $success = 'Opportunity updated successfully.';
     } catch (Throwable $e) {
         $error = $e->getMessage();
