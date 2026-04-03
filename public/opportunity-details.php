@@ -134,27 +134,30 @@ require_once __DIR__ . '/../app/includes/header.php';
                         <?php endif; ?>
 
                         <?php if (!empty($item['physical_effort_level'])): ?>
-                            <li><span class="icon"><?= svgIcon('check') ?></span><strong>Physical Effort:</strong> <?= e($item['physical_effort_level']) ?></li>
+                            <li><span class="icon"><?= svgIcon('physical-effort') ?></span><strong>Physical Effort:</strong> <?= e($item['physical_effort_level']) ?></li>
                         <?php endif; ?>
 
                         <?php if (!empty($item['computer_required'])): ?>
-                            <li><span class="icon"><?= svgIcon('internet') ?></span><strong>Computer:</strong> <?= e($item['computer_required']) ?></li>
+                            <li><span class="icon"><?= svgIcon('computer') ?></span><strong>Computer:</strong> <?= e($item['computer_required']) ?></li>
                         <?php endif; ?>
 
                         <?php if (!empty($item['smartphone_required'])): ?>
-                            <li><span class="icon"><?= svgIcon('internet') ?></span><strong>Smartphone:</strong> <?= e($item['smartphone_required']) ?></li>
+                            <li><span class="icon"><?= svgIcon('smartphone') ?></span><strong>Smartphone:</strong> <?= e($item['smartphone_required']) ?></li>
                         <?php endif; ?>
 
                         <?php if (!empty($item['tools_required'])): ?>
-                            <li><span class="icon"><?= svgIcon('check') ?></span><strong>Tools Required:</strong> <?= e($item['tools_required']) ?></li>
+                            <li><span class="icon"><?= svgIcon('tools-required') ?></span><strong>Tools Required:</strong> <?= e($item['tools_required']) ?></li>
                         <?php endif; ?>
 
                         <?php if (!empty($item['tools_required_text'])): ?>
                             <li><span class="icon"><?= svgIcon('check') ?></span><strong>Tools Details:</strong> <?= e($item['tools_required_text']) ?></li>
                         <?php endif; ?>
 
-                        <?php if (!empty($item['family_support_helpful'])): ?>
-                            <li><span class="icon"><?= svgIcon('home-check') ?></span><strong>Family Support Helpful:</strong> <?= e($item['family_support_helpful']) ?></li>
+                        <?php if (isset($item['family_support_helpful']) && strtolower($item['family_support_helpful']) === 'yes'): ?>
+                            <li>
+                                <span class="icon"><?= svgIcon('home-check') ?></span>
+                                <strong>Family Support Helpful:</strong> <?= e($item['family_support_helpful']) ?>
+                            </li>
                         <?php endif; ?>
                     </ul>
                 </section>
@@ -209,11 +212,11 @@ require_once __DIR__ . '/../app/includes/header.php';
                     <ul class="facts-list facts-list-icons">
                         <li><span class="icon"><?= svgIcon(getOpportunityTypeIcon($item['opportunity_type'])) ?></span><strong>Type:</strong> <?= e(formatOpportunityType($item['opportunity_type'])) ?></li>
                         <li><span class="icon"><?= svgIcon('rupee') ?></span><strong>Investment:</strong> <?= e(formatCurrency($item['investment_min'])) ?> - <?= e(formatCurrency($item['investment_max'])) ?></li>
-                        <li><span class="icon"><?= svgIcon('growth') ?></span><strong>Earnings:</strong> <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('growth') ?></span><strong>Earnings per Month:</strong> <?= e(formatCurrency($item['earning_min'])) ?> - <?= e(formatCurrency($item['earning_max'])) ?></li>
                         <li><span class="icon"><?= svgIcon('clock') ?></span><strong>Time to Start:</strong> <?= e(str_replace('_', ' ', $item['time_to_start_label'])) ?></li>
                         <li><span class="icon"><?= svgIcon('home-check') ?></span><strong>Home-Based:</strong> <?= e($item['home_based_suitability']) ?></li>
                         <li><span class="icon"><?= svgIcon('shield') ?></span><strong>Risk Level:</strong> <?= e(ucfirst($item['risk_level'])) ?></li>
-                        <li><span class="icon"><?= svgIcon('growth') ?></span><strong>Growth Potential:</strong> <?= e(ucfirst($item['growth_potential'])) ?></li>
+                        <li><span class="icon"><?= svgIcon('growth-chart') ?></span><strong>Growth Potential:</strong> <?= e(ucfirst($item['growth_potential'])) ?></li>
                     </ul>
                 </div>                
 
@@ -221,9 +224,9 @@ require_once __DIR__ . '/../app/includes/header.php';
                     <h3>Requirements</h3>
                     <ul class="facts-list facts-list-icons">
                         <li><span class="icon"><?= svgIcon('education') ?></span><strong>Minimum Education:</strong> <?= e($item['min_education_level']) ?></li>
-                        <li><span class="icon"><?= svgIcon('check') ?></span><strong>Experience:</strong> <?= e($item['prior_experience_required']) ?></li>
-                        <li><span class="icon"><?= svgIcon('internet') ?></span><strong>Digital Literacy:</strong> <?= e($item['digital_literacy_level']) ?></li>
-                        <li><span class="icon"><?= svgIcon('check') ?></span><strong>Manual Effort:</strong> <?= e($item['manual_effort_level']) ?></li>
+                        <li><span class="icon"><?= svgIcon('experience') ?></span><strong>Experience:</strong> <?= e($item['prior_experience_required']) ?></li>
+                        <li><span class="icon"><?= svgIcon('digital-literacy') ?></span><strong>Digital Literacy:</strong> <?= e($item['digital_literacy_level']) ?></li>
+                        <li><span class="icon"><?= svgIcon('manual-effort') ?></span><strong>Manual Effort:</strong> <?= e($item['manual_effort_level']) ?></li>
                         <li><span class="icon"><?= svgIcon('land') ?></span><strong>Land:</strong> <?= e($item['land_required']) ?></li>
                         <li><span class="icon"><?= svgIcon('shop-space') ?></span><strong>Shop Space:</strong> <?= e($item['shop_space_required']) ?></li>
                         <li><span class="icon"><?= svgIcon('internet') ?></span><strong>Internet:</strong> <?= e($item['internet_required']) ?></li>
