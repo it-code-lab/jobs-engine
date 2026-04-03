@@ -5,57 +5,42 @@ require_once __DIR__ . '/../app/config/config.php';
 require_once __DIR__ . '/../app/includes/functions.php';
 require_once __DIR__ . '/../app/services/RecommendationService.php';
 
-$requiredFields = [
+$coreRequiredFields = [
     'age_group',
-    'current_work_status',
     'education_level',
-    'state_id',
-    'district_id',
     'available_investment_range',
     'work_preference',
     'home_based_preference',
-    'urgent_income_need',
-    'digital_literacy_level',
-    'manual_work_acceptance',
-    'risk_tolerance',
-    'has_land',
-    'has_shop_space',
-    'has_smartphone',
-    'has_internet',
-    'has_computer',
-    'has_vehicle',
-    'has_tools_equipment',
-    'family_support_available',
 ];
 
-foreach ($requiredFields as $field) {
-    if (!isset($_GET[$field]) || $_GET[$field] === '') {
+foreach ($coreRequiredFields as $field) {
+    if (!isset($_GET[$field]) || trim((string)$_GET[$field]) === '') {
         header('Location: ' . buildUrl('find-work.php'));
         exit;
     }
 }
 
 $profile = [
-    'age_group' => trim($_GET['age_group']),
-    'current_work_status' => trim($_GET['current_work_status']),
-    'education_level' => trim($_GET['education_level']),
-    'state_id' => (int)$_GET['state_id'],
-    'district_id' => (int)$_GET['district_id'],
-    'available_investment_range' => trim($_GET['available_investment_range']),
-    'work_preference' => trim($_GET['work_preference']),
-    'home_based_preference' => trim($_GET['home_based_preference']),
-    'urgent_income_need' => trim($_GET['urgent_income_need']),
-    'digital_literacy_level' => trim($_GET['digital_literacy_level']),
-    'manual_work_acceptance' => trim($_GET['manual_work_acceptance']),
-    'risk_tolerance' => trim($_GET['risk_tolerance']),
-    'has_land' => (int)$_GET['has_land'],
-    'has_shop_space' => (int)$_GET['has_shop_space'],
-    'has_smartphone' => (int)$_GET['has_smartphone'],
-    'has_internet' => (int)$_GET['has_internet'],
-    'has_computer' => (int)$_GET['has_computer'],
-    'has_vehicle' => (int)$_GET['has_vehicle'],
-    'has_tools_equipment' => (int)$_GET['has_tools_equipment'],
-    'family_support_available' => trim($_GET['family_support_available']),
+    'age_group' => trim((string)($_GET['age_group'] ?? '')),
+    'current_work_status' => trim((string)($_GET['current_work_status'] ?? 'unemployed')),
+    'education_level' => trim((string)($_GET['education_level'] ?? 'none')),
+    'state_id' => (int)($_GET['state_id'] ?? 0),
+    'district_id' => (int)($_GET['district_id'] ?? 0),
+    'available_investment_range' => trim((string)($_GET['available_investment_range'] ?? 'none')),
+    'work_preference' => trim((string)($_GET['work_preference'] ?? 'open_to_all')),
+    'home_based_preference' => trim((string)($_GET['home_based_preference'] ?? 'not_important')),
+    'urgent_income_need' => trim((string)($_GET['urgent_income_need'] ?? 'no')),
+    'digital_literacy_level' => trim((string)($_GET['digital_literacy_level'] ?? 'none')),
+    'manual_work_acceptance' => trim((string)($_GET['manual_work_acceptance'] ?? 'medium')),
+    'risk_tolerance' => trim((string)($_GET['risk_tolerance'] ?? 'medium')),
+    'has_land' => (int)($_GET['has_land'] ?? 0),
+    'has_shop_space' => (int)($_GET['has_shop_space'] ?? 0),
+    'has_smartphone' => (int)($_GET['has_smartphone'] ?? 1),
+    'has_internet' => (int)($_GET['has_internet'] ?? 0),
+    'has_computer' => (int)($_GET['has_computer'] ?? 0),
+    'has_vehicle' => (int)($_GET['has_vehicle'] ?? 0),
+    'has_tools_equipment' => (int)($_GET['has_tools_equipment'] ?? 0),
+    'family_support_available' => trim((string)($_GET['family_support_available'] ?? 'no')),
 ];
 
 $results = RecommendationService::getRecommendations($profile);
@@ -70,8 +55,8 @@ require_once __DIR__ . '/../app/includes/header.php';
         <div class="detail-card" style="margin-bottom: 24px;">
             <h1>Your Recommended Opportunities</h1>
             <p class="lead">
-                These matches are based on your education, investment range, location,
-                work preference, and available resources.
+                These matches are based on your basic profile and preferences.
+                Optional filters like location, resources, and digital skills are used when provided.
             </p>
 
             <div class="hero-actions" style="justify-content:flex-start;">
