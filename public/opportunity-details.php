@@ -146,11 +146,11 @@ require_once __DIR__ . '/../app/includes/header.php';
                         <?php endif; ?>
 
                         <?php if (!empty($item['tools_required'])): ?>
-                            <li><span class="icon"><?= svgIcon('tools-required') ?></span><strong>Tools Required:</strong> <?= e($item['tools_required']) ?></li>
+                            <li><span class="icon"><?= svgIcon('tools-required') ?></span><strong>Tools/Resources Required:</strong> <?= e($item['tools_required']) ?></li>
                         <?php endif; ?>
 
                         <?php if (!empty($item['tools_required_text'])): ?>
-                            <li><span class="icon"><?= svgIcon('check') ?></span><strong>Tools Details:</strong> <?= e($item['tools_required_text']) ?></li>
+                            <li><span class="icon"><?= svgIcon('check') ?></span><strong>Tools/Resources Required:</strong> <?= e($item['tools_required_text']) ?></li>
                         <?php endif; ?>
 
                         <?php if (isset($item['family_support_helpful']) && strtolower($item['family_support_helpful']) === 'yes'): ?>

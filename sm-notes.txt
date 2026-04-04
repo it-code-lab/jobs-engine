@@ -18,3 +18,77 @@ Lets start with - Travel booking agent
 ============================================
 
 I am building a website that will help people learn about different jobs and work they can do based on their location (used for things like market accessibility, raw material availability checks), resources they have (land, money etc.), education level, age, people they have to support and other criteria's. Starting with: country: India audience: unemployed adults, youth, homemakers, small-capital seekers opportunity types: jobs, home-based work, self-employment, micro-business geography: state/province + city/district level. Attached are some screens and code. Should I add images and icons to make it more professional and attractive? 
+============================================
+============================================
+============================================
+============================================
+============================================
+I am building a website that will help people learn about different jobs and work they can do based on their interest and resources availability. 
+Starting with focus on people in India.  
+audience: unemployed adults, youth, homemakers, small-capital seekers 
+
+
+Below are some of the key details I want to provide. 
+Can you please create these details for "Homestay Operator".
+I want the sections to be interesting and engaging enough for reading as well as for creating the video on the topic using text as audio. 
+Also anybody even with no/little prior knowledge on the topic should be able to understand full details of the work and get started.
+
+
+- Short Summary
+- Full Description
+
+Quick Facts
+
+- Investment required (min/max in Indian Rupees)
+- Expected Earning per month (min/max in Indian Rupees) 
+- Time needed to start
+- Home Based suitable (Yes/No/Partial)
+- Risk level (Low/Medium/High)
+- Growth Potenital (Low/Medium/High)
+
+Requirements
+
+- Age Requirement to start (Min Age/Max Age/Not applicable)
+- Education Requirement (primary/higher secondary/graduate/post graduate/Not applicable)
+- Digital Literacy Requirement (None/Basic/Moderate/Strong)
+- Manual Effort Requirement (Low/ Medium/High)
+- Physical Effort Requirement (Low/ Medium/High)
+- Land Requirement (No/Helpful/Required)
+- Shop Space Requirement (No/Helpful/Required)
+- Internet Required (No/Helpful/Required)
+- Computer Required (No/Helpful/Required)
+- Smartphone Required (No/Helpful/Required)
+- Vehicle Required (No/Helpful/Required)
+- Tools/Resources Required (No/Helpful/Required)
+- Details of Required Tools/Resources if applicable
+
+Suitability
+
+- Who this is suitable for
+- Who should avoid it
+
+Market and Location Fit
+
+- Scalability (Low / Medium/ High)
+- Urban Suitability (Low / Medium/ High)
+- Semi-Urban Suitability (Low / Medium/ High)
+- Rural Suitability (Low / Medium/ High)
+- Market Dependency Notes
+- Raw Material Dependency Notes
+
+Practical Guidance
+- First Income Timeline Note
+- Success Tip Notes
+- Common Mistakes Notes
+
+First Steps
+
+- First Steps (Points with headings)
+
+Risks and Challenges
+
+- Risks and Challenges (Points with headings)
+
+
+
+

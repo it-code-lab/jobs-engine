@@ -1,5 +1,5 @@
 -- =========================================================
--- Jobs Platform - India V1
+-- Earning Guide - India V1
 -- MySQL 8+ Schema
 -- Stack: PHP + MySQL
 -- =========================================================
@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS jobs_opportunities (
 
     market_dependency_notes TEXT NULL,
     raw_material_dependency_notes TEXT NULL,
-    first_income_timeline VARCHAR(150) NULL,
+    first_income_timeline TEXT NULL,
     success_tips TEXT NULL,
     common_mistakes TEXT NULL,
 

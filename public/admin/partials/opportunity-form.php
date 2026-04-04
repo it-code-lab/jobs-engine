@@ -295,7 +295,7 @@ $educationOptions = ['none','primary','middle','secondary','higher_secondary','v
             </select>
         </div>
         <div>
-            <label>Tools Required</label>
+            <label>Tools/Resources Required</label>
             <select name="tools_required">
                 <?php foreach (['no','helpful','required'] as $v): ?>
                     <option value="<?= e($v) ?>" <?= fieldValue($formData, 'tools_required', 'no') === $v ? 'selected' : '' ?>>

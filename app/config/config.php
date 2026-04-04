@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-define('APP_NAME', 'Jobs Platform');
+define('APP_NAME', 'Earning Guide');
 define('APP_URL', 'http://localhost/jobs-engine/public'); 
 define('APP_ENV', 'local');
 
